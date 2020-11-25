@@ -5,6 +5,6 @@ services:
     container_name: stns
     volumes:
       - ./stns.conf:/etc/stns/server/stns.conf
-      - ./stns/conf.d:/etc/stns/conf.d
+      - ./conf.d:/etc/stns/conf.d
     ports:
       - 1104:1104
