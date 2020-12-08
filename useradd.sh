@@ -9,6 +9,15 @@ error() {
 	exit 1
 }
 
+join_by() {
+	sep=$1
+	shift
+	list=("$@")
+	res="$(printf "${sep}%s" "${list[@]}" )"
+	res="${res:${#sep}}"
+	echo $res
+}
+
 # オプション解析
 while getopts :u:s:k: OPT; do
 	case $OPT in
@@ -44,8 +53,8 @@ fi
 
 # 公開鍵の形式チェック
 keylist=()
-echo $key | while read line
-do
+IFS=$'\n'
+for line in $key; do
 	if [ -n "$line" ]; then
 		echo $line | ssh-keygen -lf /dev/stdin &> /dev/null
 		if [ $? -ne 0 ]; then
@@ -54,7 +63,7 @@ do
 		keylist+=( "\"$line\"" )
 	fi
 done
-key=$(IFS=", "; echo "${keylist[*]}")
+key=$(join_by ", " "${keylist[@]}")
 
 # ユーザ名の重複チェックと次のidを取得
 max_id=2000
