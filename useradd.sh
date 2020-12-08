@@ -18,6 +18,9 @@ join_by() {
 	echo $res
 }
 
+# confファイルの保存先ディレクトリ
+confdir=$(find `pwd` -name "conf.d" -type d)
+
 # オプション解析
 while getopts :u:s:k: OPT; do
 	case $OPT in
@@ -67,7 +70,7 @@ key=$(join_by ", " "${keylist[@]}")
 
 # ユーザ名の重複チェックと次のidを取得
 max_id=2000
-for conf in $(find ./conf.d/ -type f); do
+for conf in $(find $confdir -type f); do
 	conf=`basename $conf`
 	conf_id=`echo $conf | sed -r 's/^([0-9]{1,5})-.+\.conf$/\1/'`
 	conf_user=`echo $conf | sed -r 's/^[0-9]{1,5}-(.+)\.conf$/\1/'`
@@ -81,7 +84,7 @@ done
 next_id=$(($max_id+1))
 
 # confファイルを作成
-cat > ./conf.d/${next_id}-${user}.conf << EOS
+cat > $confdir/${next_id}-${user}.conf << EOS
 [users.${user}]
 id = ${next_id}
 group_id = ${next_id}
@@ -92,4 +95,4 @@ keys = [$key]
 id = ${next_id}
 users = ["${user}"]
 EOS
-info_msg "confファイルを作成しました: \e[1m"./conf.d/${next_id}-${user}.conf"\e[m"
+info_msg "confファイルを作成しました: \e[1m"$confdir/${next_id}-${user}.conf"\e[m"
