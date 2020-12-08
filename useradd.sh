@@ -9,25 +9,52 @@ error() {
 	exit 1
 }
 
-# ユーザ名と公開鍵を入力
-if [ $# -eq 4 ]; then
-	user=$1
-	key="$2 $3 $4"
-	info_msg "ユーザ名: \e[1m"$user"\e[m"
-	info_msg "公開鍵: \e[1m"$key"\e[m"
-else
-	read -p "ユーザ名: " user
-	read -p "公開鍵: " key
+# オプション解析
+while getopts :u:s:k: OPT; do
+	case $OPT in
+		u) user=$OPTARG ;;
+		s) shell=$OPTARG ;;
+		k) key=$OPTARG ;;
+		:) error "オプション引数が指定されていません: \e[1m-"$OPTARG"\e[m" ;;
+		*) error "指定されたオプションが正しくありません: \e[1m-"$OPTARG"\e[m" ;;
+	esac
+done
+
+# 必要な情報が取得できているかチェック
+if [ ! -v user ]; then
+	error "ユーザ名が指定されていません: \e[1m-u\e[m"
+elif [ ! -v shell ]; then
+	error "シェルが指定されていません: \e[1m-s\e[m"
+elif [ ! -v key ]; then
+	error "公開鍵が指定されていません: \e[1m-k\e[m"
 fi
 
-# ユーザ名と公開鍵の形式チェック
+# ユーザ名の形式チェック
 if ! `echo $user | grep -Eq "^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$"`; then
 	error "入力されたユーザ名が正しくありません: \e[1m"$user"\e[m"
 fi
-echo $key | ssh-keygen -lf /dev/stdin &> /dev/null
-if [ $? -ne 0 ]; then
-	error "入力された公開鍵が正しくありません: \e[1m"$key"\e[m"
+
+# シェルの形式チェック
+if [ ! `echo $shell | grep '/'` ]; then
+	shell=$(which $shell)
 fi
+if [ ! -f $shell ]; then
+	error "入力されたシェルが存在しません: \e[1m"$shell"\e[m"
+fi
+
+# 公開鍵の形式チェック
+keylist=()
+echo $key | while read line
+do
+	if [ -n "$line" ]; then
+		echo $line | ssh-keygen -lf /dev/stdin &> /dev/null
+		if [ $? -ne 0 ]; then
+			error "入力された公開鍵が正しくありません: \e[1m"$line"\e[m"
+		fi
+		keylist+=( "\"$line\"" )
+	fi
+done
+key=$(IFS=", "; echo "${keylist[*]}")
 
 # ユーザ名の重複チェックと次のidを取得
 max_id=2000
@@ -49,8 +76,8 @@ cat > ./conf.d/${next_id}-${user}.conf << EOS
 [users.${user}]
 id = ${next_id}
 group_id = ${next_id}
-shell = "/usr/bin/zsh"
-keys = ["${key}"]
+shell = "$shell"
+keys = [$key]
 
 [groups.${user}]
 id = ${next_id}
