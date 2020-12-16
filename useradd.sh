@@ -19,7 +19,8 @@ join_by() {
 }
 
 # confファイルの保存先ディレクトリ
-confdir=$(find `pwd` -name "conf.d" -type d)
+confdir=$(pwd)/conf.d
+mkdir -p $confdir
 
 # オプション解析
 while getopts :u:s:k: OPT; do

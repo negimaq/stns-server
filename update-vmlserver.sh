@@ -10,7 +10,7 @@ error() {
 }
 
 # csvファイルの保存先ディレクトリを作成
-csvdir=$(find `pwd` -name "csv.d" -type d)
+csvdir=$(pwd)/csv.d
 mkdir -p $csvdir
 
 # 引数としてURLが指定されている場合にはcsvファイルをダウンロード
