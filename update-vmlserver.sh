@@ -9,8 +9,28 @@ error() {
 	exit 1
 }
 
+# csvファイルの保存先ディレクトリを作成
+csvdir=$(find `pwd` -name "csv.d" -type d)
+mkdir -p $csvdir
+
+# 引数としてURLが指定されている場合にはcsvファイルをダウンロード
+if [ $# -eq 1 ]; then
+	if [ ! `curl -sL -o /dev/null -w '%{content_type}' $1 | grep 'csv'` ]; then
+		error "csvファイルのURLではありません: \e[1m-"$1"\e[m" ;;
+	fi
+	curl -L -o $csvdir/tluser_`date "+%Y-%m-%d_%H:%M"`.csv $1
+	if [ $? -ne 0 ]; then
+		error "csvファイルのダウンロードに失敗しました: \e[1m-"$1"\e[m" ;;
+	fi
+else
+	ls $csvdir/*.csv > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		error "csvファイルが存在しません: \e[1m-"$csvdir"\e[m" ;;
+	fi
+fi
+
 # Googleフォームからダウンロードした最新のcsvファイルのパスを取得
-csvfile=$(ls -t $(find `pwd` -name "csv.d" -type d)/*.csv | head -n 1)
+csvfile=$(ls -t $csvdir/*.csv | head -n 1)
 
 # csvファイルを読み込んで各行ごとに処理
 {
