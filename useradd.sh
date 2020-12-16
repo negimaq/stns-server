@@ -69,30 +69,39 @@ done
 key=$(join_by ", " "${keylist[@]}")
 
 # ユーザ名の重複チェックと次のidを取得
+exist_flag=0
 max_id=2000
 for conf in $(find $confdir -type f); do
 	conf=`basename $conf`
 	conf_id=`echo $conf | sed -r 's/^([0-9]{1,5})-.+\.conf$/\1/'`
 	conf_user=`echo $conf | sed -r 's/^[0-9]{1,5}-(.+)\.conf$/\1/'`
 	if [ $user = $conf_user ]; then
-		error "入力されたユーザ名のconfファイルは既に存在します: \e[1m"$conf"\e[m"
+		exist_flag=1
+		user_id=$conf_id
+		break
 	fi
 	if [ $conf_id -gt $max_id ]; then
 		max_id=$conf_id
 	fi
 done
-next_id=$(($max_id+1))
+if !exist_flag; then
+	user_id=$(($max_id+1))
+fi
 
 # confファイルを作成
-cat > $confdir/${next_id}-${user}.conf << EOS
+cat > $confdir/${user_id}-${user}.conf << EOS
 [users.${user}]
-id = ${next_id}
-group_id = ${next_id}
+id = ${user_id}
+group_id = ${user_id}
 shell = "$shell"
 keys = [$key]
 
 [groups.${user}]
-id = ${next_id}
+id = ${user_id}
 users = ["${user}"]
 EOS
-info_msg "confファイルを作成しました: \e[1m"$confdir/${next_id}-${user}.conf"\e[m"
+if exist_flag; then
+	info_msg "既存のconfファイルを上書きしました: \e[1m"$confdir/${user_id}-${user}.conf"\e[m"
+else
+	info_msg "confファイルを作成しました: \e[1m"$confdir/${user_id}-${user}.conf"\e[m"
+fi
