@@ -84,7 +84,7 @@ for conf in $(find $confdir -type f); do
 		max_id=$conf_id
 	fi
 done
-if !exist_flag; then
+if [ $exist_flag -eq 0 ]; then
 	user_id=$(($max_id+1))
 fi
 
@@ -100,7 +100,7 @@ keys = [$key]
 id = ${user_id}
 users = ["${user}"]
 EOS
-if exist_flag; then
+if [ $exist_flag -eq 1 ]; then
 	info_msg "既存のconfファイルを上書きしました: \e[1m"$confdir/${user_id}-${user}.conf"\e[m"
 else
 	info_msg "confファイルを作成しました: \e[1m"$confdir/${user_id}-${user}.conf"\e[m"
