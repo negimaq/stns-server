@@ -13,15 +13,23 @@ error() {
 csvdir=$(pwd)/csv.d
 mkdir -p $csvdir
 
-# 引数としてURLが指定されている場合にはcsvファイルをダウンロード
+# URLが指定されている場合にはcsvファイルをダウンロード
 if [ $# -eq 1 ]; then
-	if [ ! `curl -sL -o /dev/null -w '%{content_type}' "$1" | grep 'csv'` ]; then
-		error "csvファイルのURLではありません: \e[1m"$1"\e[m"
+	csvurl=$1
+elif [ -f ./.env ]; then
+	. ./.env
+	if [ ! -z "$CSV_URL" ]; then
+		csvurl=$CSV_URL
+	fi
+fi
+if [ ! -z "$csvurl" ]; then
+	if [ ! `curl -sL -o /dev/null -w '%{content_type}' "$csvurl" | grep 'csv'` ]; then
+		error "csvファイルのURLではありません: \e[1m"$csvurl"\e[m"
 	fi
 	csvname="tluser_$(date '+%Y-%m-%d_%H:%M').csv"
-	curl -L -o $csvdir/$csvname "$1"
+	curl -sL -o $csvdir/$csvname "$csvurl"
 	if [ $? -ne 0 ]; then
-		error "csvファイルのダウンロードに失敗しました: \e[1m"$1"\e[m"
+		error "csvファイルのダウンロードに失敗しました: \e[1m"$csvurl"\e[m"
 	else
 		info_msg "csvファイルをダウンロードしました: \e[1m"$csvname"\e[m"
 
@@ -35,6 +43,7 @@ fi
 
 # Googleフォームからダウンロードした最新のcsvファイルのパスを取得
 csvfile=$(ls -t $csvdir/*.csv | head -n 1)
+info_msg "csvファイルをロードします: \e[1m"$(basename $csvfile)"\e[m"
 
 # csvファイルを読み込んでヘッダーを除く各行ごとに処理
 first_line=1
