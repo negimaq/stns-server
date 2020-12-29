@@ -3,6 +3,7 @@ services:
   stns:
     image: stns/stns:latest
     container_name: stns
+    restart: always
     volumes:
       - ./stns.conf:/etc/stns/server/stns.conf
       - ./conf.d:/etc/stns/conf.d
