@@ -63,7 +63,7 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		shell="rbash"
 		key="$(echo -e "${values[5]}" | sed 's/^\"//' | sed 's/\"$//')"
 		homedir="/home/common"
-		./useradd.sh -c $confdir -u $user -s $shell -k $key -h $homedir
+		./useradd.sh -c $confdir -u $user -s $shell -k $key -d $homedir
 		first_line=1
 	fi
 done

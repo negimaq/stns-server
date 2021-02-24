@@ -19,13 +19,13 @@ join_by() {
 }
 
 # オプション解析
-while getopts :c:u:s:k: OPT; do
+while getopts :c:u:s:k:d: OPT; do
 	case $OPT in
 		c) confdir=$OPTARG ;;
 		u) user=$OPTARG ;;
 		s) shell=$OPTARG ;;
 		k) key=$OPTARG ;;
-		h) homedir=$OPTARG ;;
+		d) homedir=$OPTARG ;;
 		:) error "オプション引数が指定されていません: \e[1m-"$OPTARG"\e[m" ;;
 		*) error "指定されたオプションが正しくありません: \e[1m-"$OPTARG"\e[m" ;;
 	esac
