@@ -28,6 +28,7 @@ while getopts :u:s:k: OPT; do
 		u) user=$OPTARG ;;
 		s) shell=$OPTARG ;;
 		k) key=$OPTARG ;;
+		h) homedir=$OPTARG ;;
 		:) error "オプション引数が指定されていません: \e[1m-"$OPTARG"\e[m" ;;
 		*) error "指定されたオプションが正しくありません: \e[1m-"$OPTARG"\e[m" ;;
 	esac
@@ -69,6 +70,11 @@ for line in $key; do
 done
 key=$(join_by ", " "${keylist[@]}")
 
+# ホームディレクトリのパスを設定
+if [ ! -v homedir ]; then
+	homedir="/home/$user"
+fi
+
 # ユーザ名の重複チェックと次のidを取得
 exist_flag=0
 max_id=2000
@@ -96,6 +102,7 @@ id = ${user_id}
 group_id = ${user_id}
 shell = "$shell"
 keys = [$key]
+directory = "$homedir"
 
 [groups.${user}]
 id = ${user_id}
