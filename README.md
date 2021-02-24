@@ -27,7 +27,7 @@ STNS server settings
     ./update-vmlserver.sh
     ./update-vmlbastion.sh
     ```
-4. Run stns container.
+4. Run stns containers.
     ```
     sudo docker-compose up -d
     ```
@@ -42,7 +42,7 @@ STNS server settings
     
     ./update-vmlbastion.sh
     ```
-2. Restart stns container.
+2. Restart stns containers.
 
     ```
     sudo docker-compose restart
