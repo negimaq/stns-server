@@ -3,7 +3,6 @@ STNS server settings
 
 ## Setup
 1. Create `stns.conf` file on `stns-server` directory.
-
     ```stns.conf
     port = 1104
     include = "/etc/stns/conf.d/*"
@@ -26,9 +25,6 @@ STNS server settings
 3. Run script to add users.
     ```
     ./update-vmlserver.sh
-    
-    # or
-    
     ./update-vmlbastion.sh
     ```
 4. Run stns container.
@@ -42,7 +38,7 @@ STNS server settings
     ```
     ./update-vmlserver.sh
     
-    # or
+    # or / and
     
     ./update-vmlbastion.sh
     ```

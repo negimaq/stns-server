@@ -1,4 +1,5 @@
 /csv.d/
-/conf.d/
+/vmlserver-conf.d/
+/vmlbastion-conf.d/
 /.env
 /stns.conf

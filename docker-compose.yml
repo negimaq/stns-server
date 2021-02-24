@@ -1,8 +1,8 @@
 version: '2'
 services:
-  stns:
+  stns-vmlserver:
     image: stns/stns:latest
-    container_name: stns
+    container_name: stns-vmlserver
     restart: always
     ulimits:
       nproc: 65535
@@ -11,6 +11,21 @@ services:
         hard: 65535
     volumes:
       - ./stns.conf:/etc/stns/server/stns.conf
-      - ./conf.d:/etc/stns/conf.d
+      - ./vmlserver-conf.d:/etc/stns/conf.d
     ports:
       - 1104:1104
+
+  stns-vmlbastion:
+    image: stns/stns:latest
+    container_name: stns-vmlbastion
+    restart: always
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    volumes:
+      - ./stns.conf:/etc/stns/server/stns.conf
+      - ./vmlbastion-conf.d:/etc/stns/conf.d
+    ports:
+      - 1105:1104

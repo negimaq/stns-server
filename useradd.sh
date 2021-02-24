@@ -18,13 +18,10 @@ join_by() {
 	echo $res
 }
 
-# confファイルの保存先ディレクトリ
-confdir=$(pwd)/conf.d
-mkdir -p $confdir
-
 # オプション解析
 while getopts :u:s:k: OPT; do
 	case $OPT in
+		c) confdir=$OPTARG ;;
 		u) user=$OPTARG ;;
 		s) shell=$OPTARG ;;
 		k) key=$OPTARG ;;
@@ -35,13 +32,18 @@ while getopts :u:s:k: OPT; do
 done
 
 # 必要な情報が取得できているかチェック
-if [ ! -v user ]; then
+if [ ! -v confdir ]; then
+	error "confファイルの保存先ディレクトリが指定されていません: \e[1m-c\e[m"
+elif [ ! -v user ]; then
 	error "ユーザ名が指定されていません: \e[1m-u\e[m"
 elif [ ! -v shell ]; then
 	error "シェルが指定されていません: \e[1m-s\e[m"
 elif [ ! -v key ]; then
 	error "公開鍵が指定されていません: \e[1m-k\e[m"
 fi
+
+# confファイルの保存先ディレクトリ
+mkdir -p $confdir
 
 # ユーザ名の形式チェック
 if ! `echo $user | grep -Eq "^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$"`; then

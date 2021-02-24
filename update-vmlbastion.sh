@@ -58,11 +58,12 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		IFS=',' values+=(${elems[@]})
 	fi
 	if [[ $row != *,\"* ]]; then # 最終行
-		confdir="$(pwd)/vmlserver-conf.d"
+		confdir="$(pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
-		shell="${values[3]}"
-		key="$(echo -e "${values[4]}" | sed 's/^\"//' | sed 's/\"$//')"
-		./useradd.sh -c $confdir -u $user -s $shell -k $key
+		shell="rbash"
+		key="$(echo -e "${values[5]}" | sed 's/^\"//' | sed 's/\"$//')"
+		homedir="/home/common"
+		./useradd.sh -c $confdir -u $user -s $shell -k $key -h $homedir
 		first_line=1
 	fi
 done
