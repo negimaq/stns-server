@@ -19,7 +19,7 @@ join_by() {
 }
 
 # オプション解析
-while getopts :u:s:k: OPT; do
+while getopts :c:u:s:k: OPT; do
 	case $OPT in
 		c) confdir=$OPTARG ;;
 		u) user=$OPTARG ;;
