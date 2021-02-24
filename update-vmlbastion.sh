@@ -48,20 +48,20 @@ info_msg "csvファイルをロードします: \e[1m"$(basename $csvfile)"\e[m"
 # csvファイルを読み込んでヘッダーを除く各行ごとに処理
 first_line=1
 tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
-	if [ $first_line -eq 1 ]; then # 1行目
+	if [ $first_line -eq 1 ]; then # 各ユーザの1行目
 		IFS=',' read -ra values <<< "$row"
 		first_line=0
-	else # 2行目以降
+	else # 各ユーザの2行目以降
 		IFS=',' read -ra elems <<< "$row"
 		values[${#values[@]}-1]="${values[${#values[@]}-1]}\n${elems[0]}"
 		unset elems[0]
 		IFS=',' values+=(${elems[@]})
 	fi
-	if [[ $row != *,\"* ]]; then # 最終行
+	if [[ $row != *,\"* ]]; then # 各ユーザの最終行
 		confdir="$(pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
 		shell="rbash"
-		key="$(echo -e "${values[5]}" | sed 's/^\"//' | sed 's/\"$//')"
+		key="$(echo -e "${values[5]}" | sed 's/\"//')"
 		homedir="/home/common"
 		./useradd.sh -c $confdir -u $user -s $shell -k $key -d $homedir
 		first_line=1
