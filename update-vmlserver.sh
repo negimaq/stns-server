@@ -61,7 +61,7 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		confdir="$(pwd)/vmlserver-conf.d"
 		user="${values[2]}"
 		shell="${values[3]}"
-		key="$(echo -e "${values[4]}" | sed 's/\"//')"
+		key="$(echo -e "${values[4]}" | tr -d "\r" | sed 's/\"//')"
 		./useradd.sh -c $confdir -u $user -s $shell -k $key
 		first_line=1
 	fi

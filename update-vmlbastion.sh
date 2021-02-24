@@ -61,7 +61,7 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		confdir="$(pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
 		shell="rbash"
-		key="$(echo -e "${values[5]}" | sed 's/\"//')"
+		key="$(echo -e "${values[5]}" | tr -d "\r" | sed 's/\"//')"
 		homedir="/home/common"
 		./useradd.sh -c $confdir -u $user -s $shell -d $homedir -k $key
 		first_line=1
