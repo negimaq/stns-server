@@ -22,7 +22,7 @@ STNS server settings
     | 20XX/01/01 00:00:00 | mail@xxxxx | user | bash | ssh-rsa AAAA... | ssh-ed25519 AAAA... |
   
     Using Google Forms, you can easily get this csv file and url.
-3. Run script to add users.
+3. Run scripts to add users.
     ```
     ./update-vmlserver.sh
     ./update-vmlbastion.sh
@@ -33,7 +33,7 @@ STNS server settings
     ```
 
 ## Add new user
-1. Run script to add users.
+1. Run scripts to add users.
 
     ```
     ./update-vmlserver.sh
