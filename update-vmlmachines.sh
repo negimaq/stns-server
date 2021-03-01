@@ -58,7 +58,7 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		IFS=',' values+=(${elems[@]})
 	fi
 	if [[ $row != *,\"* ]]; then # 各ユーザの最終行
-		confdir="$(pwd)/vmlserver-conf.d"
+		confdir="$(pwd)/vmlmachines-conf.d"
 		user="${values[2]}"
 		shell="${values[3]}"
 		key="$(echo -e "${values[4]}" | tr -d "\r" | sed 's/\"//')"
