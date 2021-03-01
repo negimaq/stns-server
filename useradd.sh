@@ -102,7 +102,7 @@ else
 fi
 
 # confファイルを作成
-cat > $confdir/${user_id}-${user}.conf << EOS
+cat << EOS | sudo tee $confdir/${user_id}-${user}.conf
 [users.${user}]
 id = ${user_id}
 group_id = ${user_id}
@@ -115,6 +115,10 @@ directory = "$homedir"
 id = ${user_id}
 users = ["${user}"]
 EOS
+
+# confファイルの所有権変更
+sudo chown ${user}:${user} $confdir/${user_id}-${user}.conf
+
 if [ $exist_flag -eq 1 ]; then
 	info_msg "既存のconfファイルを上書きしました: \e[1m"$confdir/${user_id}-${user}.conf"\e[m"
 else
