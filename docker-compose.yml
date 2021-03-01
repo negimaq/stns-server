@@ -1,8 +1,8 @@
 version: '2'
 services:
-  stns-vmlserver:
+  stns-vmlmachines:
     image: stns/stns:latest
-    container_name: stns-vmlserver
+    container_name: stns-vmlmachines
     restart: always
     ulimits:
       nproc: 65535
@@ -11,7 +11,7 @@ services:
         hard: 65535
     volumes:
       - ./stns.conf:/etc/stns/server/stns.conf
-      - ./vmlserver-conf.d:/etc/stns/conf.d
+      - ./vmlmachines-conf.d:/etc/stns/conf.d
     ports:
       - 1104:1104
 

@@ -1,5 +1,5 @@
 # stns-server
-STNS server settings
+STNS server settings for vmlmachines and vmlbastion
 
 ## Setup
 1. Create `stns.conf` file on `stns-server` directory.
@@ -17,14 +17,14 @@ STNS server settings
     CSV_URL="https://xxxxx.xxx/xxxxx.csv"
     ```
     This csv file should follow the format below:
-    | Timestamp | Mail address | Username | Shell | Pubkey (vmlserver) | Pubkey (vmlbastion) |
+    | Timestamp | Mail address | Username | Shell | Pubkey (vmlmachines) | Pubkey (vmlbastion) |
     |:---:|:---:|:---:|:---:|:---:|:---:|
     | 20XX/01/01 00:00:00 | mail@xxxxx | user | bash | ssh-rsa AAAA... | ssh-ed25519 AAAA... |
   
     Using Google Forms, you can easily get this csv file and url.
 3. Run scripts to add users.
     ```
-    ./update-vmlserver.sh
+    ./update-vmlmachines.sh
     ./update-vmlbastion.sh
     ```
 4. Run stns containers.
@@ -36,7 +36,7 @@ STNS server settings
 1. Run scripts to add users.
 
     ```
-    ./update-vmlserver.sh
+    ./update-vmlmachines.sh
     
     # or / and
     
