@@ -102,7 +102,7 @@ else
 fi
 
 # confファイルを作成
-cat << EOS | sudo tee $confdir/${user_id}-${user}.conf
+cat << EOS | sudo tee $confdir/${user_id}-${user}.conf > /dev/null
 [users.${user}]
 id = ${user_id}
 group_id = ${user_id}
