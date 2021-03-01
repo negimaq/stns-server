@@ -74,7 +74,7 @@ key=$(join_by ", " "${keylist[@]}")
 
 # ホームディレクトリのパスを設定
 if [ ! -v homedir ]; then
-	homedir="/home/$user"
+	homedir=""
 fi
 
 # ユーザ名の重複チェックと次のidを取得
@@ -95,6 +95,10 @@ for conf in $(find $confdir -type f); do
 done
 if [ $exist_flag -eq 0 ]; then
 	user_id=$(($max_id+1))
+	password=""
+else
+	# ログインパスワードは引き継ぎ
+	password=$(sed -n -r "s/^password = \"(.*)\"$/\1/p" $confdir/${user_id}-${user}.conf)
 fi
 
 # confファイルを作成
@@ -104,6 +108,7 @@ id = ${user_id}
 group_id = ${user_id}
 shell = "$shell"
 keys = [$key]
+password = "$password"
 directory = "$homedir"
 
 [groups.${user}]
