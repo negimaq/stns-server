@@ -117,7 +117,7 @@ users = ["${user}"]
 EOS
 
 # confファイルの所有権変更
-sudo chown ${user}:${user} $confdir/${user_id}-${user}.conf
+sudo chown ${user_id}:${user_id} $confdir/${user_id}-${user}.conf
 
 if [ $exist_flag -eq 1 ]; then
 	info_msg "既存のconfファイルを上書きしました: \e[1m"$confdir/${user_id}-${user}.conf"\e[m"
