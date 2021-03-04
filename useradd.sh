@@ -72,11 +72,6 @@ for line in $key; do
 done
 key=$(join_by ", " "${keylist[@]}")
 
-# ホームディレクトリのパスを設定
-if [ ! -v homedir ]; then
-	homedir=""
-fi
-
 # ユーザ名の重複チェックと次のidを取得
 exist_flag=0
 max_id=2000
@@ -96,9 +91,15 @@ done
 if [ $exist_flag -eq 0 ]; then
 	user_id=$(($max_id+1))
 	password=""
+	if [ ! -v homedir ]; then
+		homedir=""
+	fi
 else
 	# ログインパスワードは引き継ぎ
 	password=$(sed -n -r "s/^password = \"(.*)\"$/\1/p" $confdir/${user_id}-${user}.conf)
+	if [ ! -v homedir ]; then
+		homedir=$(sed -n -r "s/^directory = \"(.*)\"$/\1/p" $confdir/${user_id}-${user}.conf)
+	fi
 fi
 
 # confファイルを作成
