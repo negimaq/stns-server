@@ -10,7 +10,7 @@ error() {
 }
 
 # csvファイルの保存先ディレクトリを作成
-csvdir=$(pwd)/csv.d
+csvdir=$(cd $(dirname $0); pwd)/csv.d
 mkdir -p $csvdir
 
 # URLが指定されている場合にはcsvファイルをダウンロード
@@ -58,7 +58,7 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		IFS=',' values+=(${elems[@]})
 	fi
 	if [[ $row != *,\"* ]]; then # 各ユーザの最終行
-		confdir="$(pwd)/vmlbastion-conf.d"
+		confdir="$(cd $(dirname $0); pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
 		shell="rbash"
 		key="$(echo -e "${values[5]}" | tr -d "\r" | sed 's/\"//')"

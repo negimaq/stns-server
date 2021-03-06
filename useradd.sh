@@ -96,9 +96,9 @@ if [ $exist_flag -eq 0 ]; then
 	fi
 else
 	# ログインパスワードは引き継ぎ
-	password=$(sed -n -r "s/^password = \"(.*)\"$/\1/p" $confdir/${user_id}-${user}.conf)
+	password=$(sed -n -r "s/^(#?\s*)?password = \"(.*)\"$/\2/p" $confdir/${user_id}-${user}.conf)
 	if [ ! -v homedir ]; then
-		homedir=$(sed -n -r "s/^directory = \"(.*)\"$/\1/p" $confdir/${user_id}-${user}.conf)
+		homedir=$(sed -n -r "s/^(#?\s*)?directory = \"(.*)\"$/\2/p" $confdir/${user_id}-${user}.conf)
 	fi
 fi
 
@@ -116,6 +116,17 @@ directory = "$homedir"
 id = ${user_id}
 users = ["${user}"]
 EOS
+
+# graduates.listに含まれるユーザのconfファイルをコメントアウト
+gradfile=$(cd $(dirname $0); pwd)/graduates.list
+if [ -f $gradfile ]; then
+	gradlist=($(cat $gradfile))
+	for e in ${gradlist[@]}; do
+		if [ ${user} -eq ${e} ]; then
+			sudo sed -i -r "s/^(#?\s*)?(\S.*)$/# \2/" $confdir/${user_id}-${user}.conf
+		fi
+	done
+fi
 
 # confファイルの所有権変更
 sudo chown ${user_id}:${user_id} $confdir/${user_id}-${user}.conf
