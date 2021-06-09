@@ -9,6 +9,25 @@ error() {
 	exit 1
 }
 
+# ログインを許可するユーザリストの読み込み
+allowed_path=$(cd $(dirname $0); pwd)/allowed.list
+allowed_list=()
+if [ -f $allowed_path ]; then
+	while read line; do
+		allowed_list=("${allowed_list[@]}" "$line")
+	done < $allowed_path
+fi
+
+check_list() {
+	local e
+	for e in ${allowed_list[@]}; do
+		if [[ ${e} = ${1} ]]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
 # csvファイルの保存先ディレクトリを作成
 csvdir=$(cd $(dirname $0); pwd)/csv.d
 mkdir -p $csvdir
@@ -61,7 +80,11 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		confdir="$(cd $(dirname $0); pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
 		shell="rbash"
-		key="$(echo -e "${values[5]}" | tr -d "\r" | sed 's/\"//')"
+		if check_list "$user"; then
+			key="$(echo -e "${values[5]}" | tr -d "\r" | sed 's/\"//')"
+		else
+			key=""
+		fi
 		homedir="/home/common"
 		./useradd.sh -c $confdir -u $user -s $shell -d $homedir -k $key
 		first_line=1

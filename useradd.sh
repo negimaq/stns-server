@@ -117,17 +117,6 @@ id = ${user_id}
 users = ["${user}"]
 EOS
 
-# graduates.listに含まれるユーザのconfファイルをコメントアウト
-gradfile=$(cd $(dirname $0); pwd)/graduates.list
-if [ -f $gradfile ]; then
-	gradlist=($(cat $gradfile))
-	for e in ${gradlist[@]}; do
-		if [ ${user} -eq ${e} ]; then
-			sudo sed -i -r "s/^(#?\s*)?(\S.*)$/# \2/" $confdir/${user_id}-${user}.conf
-		fi
-	done
-fi
-
 # confファイルの所有権変更
 sudo chown ${user_id}:${user_id} $confdir/${user_id}-${user}.conf
 
