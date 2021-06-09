@@ -38,8 +38,6 @@ elif [ ! -v user ]; then
 	error "ユーザ名が指定されていません: \e[1m-u\e[m"
 elif [ ! -v shell ]; then
 	error "シェルが指定されていません: \e[1m-s\e[m"
-elif [ ! -v key ]; then
-	error "公開鍵が指定されていません: \e[1m-k\e[m"
 fi
 
 # confファイルの保存先ディレクトリ
@@ -59,18 +57,22 @@ if [ ! -f $shell ]; then
 fi
 
 # 公開鍵の形式チェック
-keylist=()
-IFS=$'\n'
-for line in $key; do
-	if [ -n "$line" ]; then
-		echo $line | ssh-keygen -lf /dev/stdin &> /dev/null
-		if [ $? -ne 0 ]; then
-			error "入力された公開鍵が正しくありません: \e[1m"$line"\e[m"
+if [ -v key ]; then
+	keylist=()
+	IFS=$'\n'
+	for line in $key; do
+		if [ -n "$line" ]; then
+			echo $line | ssh-keygen -lf /dev/stdin &> /dev/null
+			if [ $? -ne 0 ]; then
+				error "入力された公開鍵が正しくありません: \e[1m"$line"\e[m"
+			fi
+			keylist+=( "\"$line\"" )
 		fi
-		keylist+=( "\"$line\"" )
-	fi
-done
-key=$(join_by ", " "${keylist[@]}")
+	done
+	key=$(join_by ", " "${keylist[@]}")
+else
+	key=""
+fi
 
 # ユーザ名の重複チェックと次のidを取得
 exist_flag=0

@@ -80,13 +80,13 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		confdir="$(cd $(dirname $0); pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
 		shell="rbash"
+		homedir="/home/common"
 		if check_list "$user"; then
 			key="$(echo -e "${values[5]}" | tr -d "\r" | sed 's/\"//')"
+			./useradd.sh -c $confdir -u $user -s $shell -d $homedir -k $key
 		else
-			key=""
+			./useradd.sh -c $confdir -u $user -s $shell -d $homedir
 		fi
-		homedir="/home/common"
-		./useradd.sh -c $confdir -u $user -s $shell -d $homedir -k $key
 		first_line=1
 	fi
 done
