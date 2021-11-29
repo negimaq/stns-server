@@ -66,6 +66,7 @@ info_msg "csvファイルをロードします: \e[1m"$(basename $csvfile)"\e[m"
 
 # csvファイルを読み込んでヘッダーを除く各行ごとに処理
 first_line=1
+dquots=""
 tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 	if [ $first_line -eq 1 ]; then # 各ユーザの1行目
 		IFS=',' read -ra values <<< "$row"
@@ -76,7 +77,8 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 		unset elems[0]
 		IFS=',' values+=(${elems[@]})
 	fi
-	if [[ $row != *,\"* ]]; then # 各ユーザの最終行
+	dquots="$dquots${row//[^\"]}" # ダブルクォーテーションのみ取り出し
+	if [ `expr ${#dquots} % 2` == 0 ]; then # 各ユーザの最終行
 		confdir="$(cd $(dirname $0); pwd)/vmlbastion-conf.d"
 		user="${values[2]}"
 		shell="rbash"
@@ -88,5 +90,6 @@ tail -n +2 $csvfile | while read row || [ -n "${row}" ]; do
 			./useradd.sh -c $confdir -u $user -s $shell -d $homedir
 		fi
 		first_line=1
+		dquots=""
 	fi
 done
